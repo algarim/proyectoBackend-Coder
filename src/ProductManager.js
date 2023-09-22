@@ -16,7 +16,9 @@ class ProductManager {
                 return [];
             }
         }
-        catch (error) { console.error(error) };
+        catch (error) { 
+            throw new Error( error.message ); 
+        };
     };
 
     async addProduct(product) {
@@ -38,7 +40,7 @@ class ProductManager {
             }
 
         } catch (error) {
-            console.error(error)
+            throw new Error( error.message );
         }
     }
 
@@ -49,13 +51,9 @@ class ProductManager {
             const searchedProduct = products.find(p => p.id === id);
 
             return searchedProduct;
-            // if (searchedProduct) {
-            //     return searchedProduct;
-            // } else {
-            //     return "There is no product with that ID.";
-            // }
+
         } catch (error) {
-            console.error(error)
+            throw new Error( error.message );
         }
     };
 
@@ -76,7 +74,7 @@ class ProductManager {
             }
 
         } catch (error) {
-            console.error(error)
+            throw new Error( error.message );
         }
     }
 
@@ -91,10 +89,12 @@ class ProductManager {
                 await fs.promises.writeFile(this.path, JSON.stringify(newArrayProducts));
             }
         } catch (error) {
-            console.error(error)
+            throw new Error( error.message );
         }
     }
 
 };
 
-export const manager = new ProductManager("./src/ProductFile.json");
+const productManager = new ProductManager("./src/ProductFile.json");
+
+export default productManager;
