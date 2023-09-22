@@ -8,7 +8,7 @@ const port = 8080;
 app.use(express.json());
 
 // ROUTES
-app.use('api/products', productsRouter);
+app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
 
 app.listen(port, () => {

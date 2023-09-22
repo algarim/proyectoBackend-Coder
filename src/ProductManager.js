@@ -16,19 +16,19 @@ class ProductManager {
                 return [];
             }
         }
-        catch (error) { 
-            throw new Error( error.message ); 
+        catch (error) {
+            throw new Error(error.message);
         };
     };
 
     async addProduct(product) {
         try {
-            const products = await this.getProducts( {} );
+            const products = await this.getProducts({});
 
             const existingProduct = products.find(p => p.code === product.code);
 
             if (existingProduct) {
-                console.error('Error: Product already exists.')
+                throw new Error('Error: Product with that code already exists.')
             } else {
 
                 let id = (products.length === 0) ? 1 : products[products.length - 1].id + 1;
@@ -36,60 +36,61 @@ class ProductManager {
                 products.push(productWithId);
 
                 await fs.promises.writeFile(this.path, JSON.stringify(products));
-
+                return productWithId;
             }
 
         } catch (error) {
-            throw new Error( error.message );
+            throw new Error(error.message);
         }
     }
 
 
     async getProductById(id) {
         try {
-            const products = await this.getProducts( {} );
+            const products = await this.getProducts({});
             const searchedProduct = products.find(p => p.id === id);
 
             return searchedProduct;
 
         } catch (error) {
-            throw new Error( error.message );
+            throw new Error(error.message);
         }
     };
 
     async updateProduct(id, updatedFields) {
         try {
-            const products = await this.getProducts( {} );
-            const selectedProduct = products.find(p => p.id === id);
+            const products = await this.getProducts({});
+            const index = products.findIndex(p => p.id === id);
 
-            if (selectedProduct) {
-                const selectedProductIndex = products.indexOf(selectedProduct);
+            if (index === -1) {
+                return null
+            };
 
-                const updatedProduct = { ...selectedProduct, ...updatedFields };
-                products[selectedProductIndex] = updatedProduct;
-                await fs.promises.writeFile(this.path, JSON.stringify(products));
+            const updatedProduct = { ...products[index], ...updatedFields };
+            products[index] = updatedProduct;
 
-            } else {
-                console.log("There is no product with that ID.");
-            }
+            await fs.promises.writeFile(this.path, JSON.stringify(products));
+            return updatedProduct;
 
         } catch (error) {
-            throw new Error( error.message );
+            throw new Error(error.message);
         }
     }
 
     async deleteProduct(id) {
         try {
-            const products = await this.getProducts( {} );
-            const newArrayProducts = products.filter(p => p.id !== id);
+            const products = await this.getProducts({});
+            const product = products.find(p => p.id === id);
 
-            if (products.length === newArrayProducts.length) {
-                console.log("There is no product with that ID.");
-            } else {
+            if (product) {
+                const newArrayProducts = products.filter(p => p.id !== id);
                 await fs.promises.writeFile(this.path, JSON.stringify(newArrayProducts));
             }
+
+            return product;
+
         } catch (error) {
-            throw new Error( error.message );
+            throw new Error(error.message);
         }
     }
 

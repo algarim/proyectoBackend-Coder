@@ -1,4 +1,5 @@
 import fs from 'fs';
+import productManager from './ProductManager.js';
 
 class CartManager {
     constructor(path) {
@@ -29,18 +30,19 @@ class CartManager {
             carts.push(newCart);
 
             await fs.promises.writeFile(this.path, JSON.stringify(carts));
+            return newCart;
 
         } catch (error) {
             throw new Error(error.message);
         }
     };
-    
+
     async getCartById(id) {
         try {
             const carts = await this.getCarts();
             const searchedCart = carts.find(c => c.id === id);
 
-            return searchedCart.products;
+            return searchedCart?.products;
 
         } catch (error) {
             throw new Error(error.message);
@@ -50,19 +52,28 @@ class CartManager {
     async addProductToCart(productId, cartId) {
         try {
             const cartsArray = await this.getCarts();
-            const cart = cartsArray.find(c => c.id === cartId).products;
 
-            const existingProduct = cart.find( item => item.product === productId);
+            const cart = cartsArray.find(c => c.id === cartId)?.products;
 
-            if (existingProduct) {
-                existingProduct.quantity++;
-            } else {
-                const newItem = { product: productId, quantity: 1 };
-                cart.push(newItem);
-            };
+            const product = await productManager.getProductById(productId);
+            
+            let newCartItem;
+
+            if (product) {
+                const existingProduct = cart?.find(item => item.productId === productId);
+
+                if (existingProduct) {
+                    existingProduct.quantity++;
+                    newCartItem = existingProduct;
+                } else {
+                    newCartItem = { productId, quantity: 1 };
+                    cart?.push(newCartItem);
+                };
+            }
 
             await fs.promises.writeFile(this.path, JSON.stringify(cartsArray));
-            
+            return { cart, product, newCartItem };
+
         } catch (error) {
             throw new Error(error.message);
         }
