@@ -31,6 +31,7 @@ socketClient.on('productAdded', (newProduct) => {
     const { id, title, description, price, stock, code } = newProduct;
 
     let newProductDom = document.createElement("div");
+    newProductDom.id = `product-${id}`
     newProductDom.innerHTML = `
     <h3>${id} - ${title}</h3>
     <p>${description}</p>
