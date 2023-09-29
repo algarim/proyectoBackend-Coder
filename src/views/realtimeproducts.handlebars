@@ -1,0 +1,69 @@
+<h2> Real time products </h2>
+{{#if products}}
+<div class="products-list">
+    {{#each products}}
+    <div id="product-{{id}}">
+        <h3>{{title}} - ID: {{id}}</h3>
+        <p>{{description}}</p>
+        <p> Price: {{ price }} </p>
+        <p> Stock: {{ stock }} </p>
+        <p> Code: {{ code }} </p>
+    <br>
+    </div>
+    {{/each}}
+</div>
+{{else}}
+<p> No products </p>
+{{/if}}
+
+<hr>
+
+<h3>Add product</h3>
+<form id="add-form">
+    <label for="title">Title</label>
+    <input type="text" name="title" id="title">
+
+    <br>
+
+    <label for="description"> Description </label>
+    <input type="text" name="description" id="description">
+
+    <br>
+
+    <label for="title"> Code </label>
+    <input type="text" name="code" id="code">
+
+    <br>
+
+    <label for="title"> Price </label>
+    <input type="number" name="price" id="price">
+
+    <br>
+
+    <label for="title"> Stock </label>
+    <input type="number" name="stock" id="stock">
+
+    <br>
+
+    <label for="title"> Category </label>
+    <input type="text" name="category" id="category">
+
+    <br>
+
+    <button type="submit"> Add product </button>
+</form>
+
+<hr>
+
+<h3>Delete product</h3>
+<form id="delete-form">
+    <label for="id">ID</label>
+    <input type="number" name="id" id="id">
+    <button type="submit"> Delete product </button>
+</form>
+
+{{!-- WEBSOCKET CLIENT --}}
+<script src="/socket.io/socket.io.js"></script>
+
+{{!-- JS --}}
+<script type="module" src="/js/index.js"></script>

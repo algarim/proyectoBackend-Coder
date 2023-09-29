@@ -1,0 +1,17 @@
+<h2>HOME</h2>
+
+{{#if products}}
+{{#each products}}
+<div>
+    <h3>{{title}} - ID: {{id}}</h3>
+    <p>{{description}}</p>
+    <p> Price: {{ price }} </p>
+    <p> Stock: {{ stock }} </p>
+    <p> Code: {{ code }} </p>
+</div>
+
+<br>
+{{/each}}
+{{else}}
+<p> No products </p>
+{{/if}}

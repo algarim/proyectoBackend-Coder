@@ -5,7 +5,7 @@ class ProductManager {
         this.path = path;
     }
 
-    async getProducts(queryObj) {
+    async getProducts( queryObj = {} ) {
         try {
             const { limit } = queryObj;
             if (fs.existsSync(this.path)) {
