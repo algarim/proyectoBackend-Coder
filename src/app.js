@@ -6,7 +6,10 @@ import { Server } from "socket.io";
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
 import viewsRouter from './routes/views.router.js';
-import productManager from './ProductManager.js';
+import productsManager from './dao/managers/ProductsManager.js';
+
+// DB
+import "./dao/configDB.js"
 
 const app = express();
 const port = 8080;
@@ -23,7 +26,7 @@ app.set("views", __dirname + "/views");
 // ROUTES
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
-app.use("/api/views", viewsRouter);
+app.use("/", viewsRouter);
 
 // WEBSOCKET SERVER
 const httpServer = app.listen(port, () => {
@@ -31,6 +34,7 @@ const httpServer = app.listen(port, () => {
 });
 
 const socketServer = new Server(httpServer);
+const messages = [];
 
 socketServer.on('connection', socket => {
     console.log(`Client connected with id ${socket.id}`);
@@ -38,9 +42,10 @@ socketServer.on('connection', socket => {
         console.log(`${socket.id} disconnected`);
     });
 
+    // PRODUCTS
     socket.on('addProduct', async (newProduct) => {
         try {
-            const product = await productManager.addProduct(newProduct);
+            const product = await productsManager.addProduct(newProduct);
 
             socketServer.emit('productAdded', product);
         } catch (error) {
@@ -48,14 +53,23 @@ socketServer.on('connection', socket => {
         }
     })
 
-
     socket.on('deleteProduct', async (id) => {
         try {
-            await productManager.deleteProduct(+id);
+            await productsManager.deleteProduct(id);
 
             socketServer.emit('productDeleted', id);
         } catch (error) {
             throw new Error(error.message);
         }
     })
+
+    // CHAT
+    socket.on("newUser", (user) => {
+        socket.broadcast.emit("userConnected", user);
+        socket.emit("connected");
+      });
+      socket.on("message", (infoMessage) => {
+        messages.push(infoMessage);
+        socketServer.emit("chat", messages);
+      });
 });

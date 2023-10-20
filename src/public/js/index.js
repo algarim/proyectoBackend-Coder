@@ -28,12 +28,12 @@ deleteForm.onsubmit = (e) => {
 const productsList = document.querySelector(".products-list");
 
 socketClient.on('productAdded', (newProduct) => {
-    const { id, title, description, price, stock, code } = newProduct;
+    const { _id, title, description, price, stock, code } = newProduct;
 
     let newProductDom = document.createElement("div");
-    newProductDom.id = `product-${id}`
+    newProductDom.id = `product-${_id}`
     newProductDom.innerHTML = `
-    <h3>${id} - ${title}</h3>
+    <h3>${title} - ID: ${_id}</h3>
     <p>${description}</p>
     <p> Price: ${ price } </p>
     <p> Stock: ${ stock } </p>

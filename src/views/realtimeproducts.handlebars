@@ -2,8 +2,8 @@
 {{#if products}}
 <div class="products-list">
     {{#each products}}
-    <div id="product-{{id}}">
-        <h3>{{title}} - ID: {{id}}</h3>
+    <div id="product-{{_id}}">
+        <h3>{{title}} - ID: {{_id}}</h3>
         <p>{{description}}</p>
         <p> Price: {{ price }} </p>
         <p> Stock: {{ stock }} </p>
@@ -58,7 +58,7 @@
 <h3>Delete product</h3>
 <form id="delete-form">
     <label for="id">ID</label>
-    <input type="number" name="id" id="id">
+    <input type="text" name="id" id="id">
     <button type="submit"> Delete product </button>
 </form>
 

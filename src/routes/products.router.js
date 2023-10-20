@@ -1,11 +1,11 @@
 import { Router } from "express";
-import productManager from "../ProductManager.js";
+import productsManager from "../dao/managers/ProductsManager.js";
 
 const router = Router();
 
 router.get('/', async (req, res) => {
     try {
-        const products = await productManager.getProducts(req.query);
+        const products = await productsManager.getProducts();
         res.status(200).json({ message: "Products found", products });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -15,11 +15,7 @@ router.get('/', async (req, res) => {
 router.get('/:pid', async (req, res) => {
     const { pid } = req.params;
     try {
-        const product = await productManager.getProductById(+pid);
-
-        if (!product) {
-            return res.status(404).json({ message: "Product not found with ID provided" })
-        };
+        const product = await productsManager.getProductById(pid);
 
         res.status(200).json({ message: "Product found", product });
 
@@ -29,7 +25,7 @@ router.get('/:pid', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-    const { title, description, code, price, status = true, stock, category, thumbnail = 'Sin imagen' } = req.body;
+    const { title, description, code, price, status, stock, category, thumbnail } = req.body;
 
     if (!title || !description || !code || !price || !stock || !category) {
         return res.status(400).json({ message: "Some data is missing" });
@@ -38,7 +34,7 @@ router.post('/', async (req, res) => {
     const newProduct = { title, description, code, price, status, stock, category, thumbnail }
 
     try {
-        const response = await productManager.addProduct(newProduct);
+        const response = await productsManager.addProduct(newProduct);
         res.status(200).json({ message: "Product added", product: response });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -49,13 +45,9 @@ router.put('/:pid', async (req, res) => {
     const { pid } = req.params;
 
     try {
-        const response = await productManager.updateProduct(+pid, req.body);
+        const product = await productsManager.updateProduct(pid, req.body);
 
-        if(!response) {
-            return res.status(404).json( {message: "Product not found with ID provided."} );
-        }
-
-        res.status(200).json( {message: "Product updated", response} );
+        res.status(200).json( {message: "Product updated"} );
         
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -65,13 +57,9 @@ router.put('/:pid', async (req, res) => {
 router.delete('/:pid', async (req, res) => {
     const { pid } = req.params;
     try {
-        const response = await productManager.deleteProduct(+pid);
+        await productsManager.deleteProduct(pid);
 
-        if (!response) {
-            return res.status(404).json({ message: "Product not found with ID provided." });
-        }
-
-        res.status(200).json({ message: "Product deleted", response });
+        res.status(200).json({ message: "Product deleted" });
 
     } catch (error) {
         res.status(500).json({ message: error.message });
