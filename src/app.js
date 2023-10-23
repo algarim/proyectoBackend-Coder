@@ -8,6 +8,8 @@ import cartsRouter from './routes/carts.router.js';
 import viewsRouter from './routes/views.router.js';
 import productsManager from './dao/managers/ProductsManager.js';
 
+import { messagesModel } from './dao/models/messages.model.js';
+
 // DB
 import "./dao/configDB.js"
 
@@ -34,7 +36,6 @@ const httpServer = app.listen(port, () => {
 });
 
 const socketServer = new Server(httpServer);
-const messages = [];
 
 socketServer.on('connection', socket => {
     console.log(`Client connected with id ${socket.id}`);
@@ -64,12 +65,23 @@ socketServer.on('connection', socket => {
     })
 
     // CHAT
-    socket.on("newUser", (user) => {
-        socket.broadcast.emit("userConnected", user);
-        socket.emit("connected");
-      });
-      socket.on("message", (infoMessage) => {
-        messages.push(infoMessage);
-        socketServer.emit("chat", messages);
-      });
+    socket.on("newUser", async (user) => {
+        try {
+            const messages = await messagesModel.find().lean();
+    
+            socket.broadcast.emit("userConnected", user);
+            socket.emit("connected", messages);
+            
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    });
+    socket.on("message", async (infoMessage) => {
+        try {
+            await messagesModel.create(infoMessage);
+            socketServer.emit("chat", infoMessage);
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    });
 });
