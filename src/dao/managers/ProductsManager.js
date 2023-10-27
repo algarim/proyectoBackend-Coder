@@ -1,8 +1,16 @@
 import { productsModel } from "../models/products.model.js"
 
 class ProductsManager {
-    async getProducts() {
-        const result = await productsModel.find().lean();
+    async getProducts(obj) {
+        const { limit = 10, page = 1, sort, ...query } = obj;
+        let sortObj
+        if (sort) {
+            sortObj = { price: sort };
+        };
+        const result = await productsModel.paginate(
+            query,
+            { limit, page, sort: sortObj }
+        );
         return result;
     };
 

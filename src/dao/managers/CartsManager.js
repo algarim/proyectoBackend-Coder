@@ -12,26 +12,31 @@ class CartsManager {
         return result;
     };
 
-    async deleteCart(id) {
-        const result = await cartsModel.deleteOne({ _id: id });
+    async emptyCart(id) {
+        const result = await cartsModel.updateOne({ _id: id }, { products: [] });
         return result;
     };
 
     async getCartById(id) {
-        const result = await cartsModel.findById(id);
+        const result = await cartsModel
+        .findById(id)
+        .populate("products.product")
+        .lean();
         return result;
     };
 
     async addProductToCart(productId, cartId) {
         try {
-            const cart = await this.getCartById(cartId);
+            const cart = await cartsModel.findById(cartId);
             const cartProducts = cart?.products;
             const product = await productsManager.getProductById(productId);
 
             let newCartItem;
 
             if (product && cartProducts) {
-                const existingProduct = cartProducts.find(item => item.product === productId);
+                const existingProduct = cartProducts.find(item => item.product.equals(productId));
+
+                console.log(existingProduct);
 
                 if (existingProduct) {
                     existingProduct.quantity++;
@@ -50,6 +55,33 @@ class CartsManager {
             throw new Error(error.message);
         }
     };
+
+    async updateProductQuantity(productId, cartId, quantity) {
+        try {
+            const cart = await cartsModel.findById(cartId);
+            const cartProducts = cart?.products;
+            const product = await productsManager.getProductById(productId);
+
+            let updatedCartItem;
+
+            if (product && cartProducts) {
+                const existingProduct = cartProducts.find(item => item.product.equals(productId));
+
+                console.log(existingProduct);
+
+                if (existingProduct) {
+                    existingProduct.quantity = quantity;
+                    updatedCartItem = existingProduct;
+                    await cartsModel.updateOne({ _id: cartId }, cart);
+                }
+            }
+
+            return { cartProducts, updatedCartItem };
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
 
     async deleteProductFromCart(productId, cartId) {
         try {

@@ -5,10 +5,24 @@ const router = Router();
 
 router.get('/', async (req, res) => {
     try {
-        const products = await productsManager.getProducts();
-        res.status(200).json({ message: "Products found", products });
+        const products = await productsManager.getProducts(req.query);
+        res.status(200).json({
+            status: "Success",
+            payload: products.docs,
+            totalPages: products.totalPages,
+            prevPage: products.prevPage,
+            nextPage: products.nextPage,
+            hasPrevPage: products.hasPrevPage,
+            hasNextPage: products.hasNextPage,
+            prevLink: products.hasPrevPage
+                ? `http://localhost:8080/api/users?page=${products.prevPage}`
+                : null,
+            nextLink: products.hasNextPage
+                ? `http://localhost:8080/api/users?page=${products.nextPage}`
+                : null,
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ status: "Error", message: error.message });
     }
 });
 
@@ -47,8 +61,8 @@ router.put('/:pid', async (req, res) => {
     try {
         const product = await productsManager.updateProduct(pid, req.body);
 
-        res.status(200).json( {message: "Product updated"} );
-        
+        res.status(200).json({ message: "Product updated" });
+
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
