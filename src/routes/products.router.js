@@ -5,7 +5,13 @@ const router = Router();
 
 router.get('/', async (req, res) => {
     try {
+        const { page, ...query } = req.query;
+
+        const queryEntries = Object.entries(query);
+        const queryString = queryEntries.reduce ( (partialRes, entry) => partialRes + '&' + entry.join('='), '');
+
         const products = await productsManager.getProducts(req.query);
+        console.log(Object.entries(req.query));
         res.status(200).json({
             status: "Success",
             payload: products.docs,
@@ -15,10 +21,10 @@ router.get('/', async (req, res) => {
             hasPrevPage: products.hasPrevPage,
             hasNextPage: products.hasNextPage,
             prevLink: products.hasPrevPage
-                ? `http://localhost:8080/api/users?page=${products.prevPage}`
+                ? `http://localhost:8080/api/products?page=${products.prevPage}${queryString}`
                 : null,
             nextLink: products.hasNextPage
-                ? `http://localhost:8080/api/users?page=${products.nextPage}`
+                ? `http://localhost:8080/api/products?page=${products.nextPage}${queryString}`
                 : null,
         });
     } catch (error) {
