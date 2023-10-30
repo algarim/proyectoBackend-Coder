@@ -1,0 +1,57 @@
+<h2> PRODUCTS </h2>
+
+{{#if products}}
+
+{{!-- PAGES MENU --}}
+<div>
+{{#if prevLink}}
+<a href={{prevLink}}> &lt </a>
+{{/if}}
+
+{{#each pagesArray}}
+<a href=""> {{this}} </a>
+{{/each}}
+
+{{#if nextLink}}
+<a href={{nextLink}}> &gt </a>
+{{/if}}
+</div>
+
+
+{{!-- PRODUCTS LIST --}}
+{{#each products}}
+
+<div>
+    <h3>{{title}}</h3>
+    <p> Price: {{ price }} </p>
+    <p> Stock: {{ stock }} </p>
+    <p> Categoría: {{ category }} </p>
+    <button class="add-product-btn" id="add-{{id}}"> Agregar al carrito </button>
+</div>
+
+<br>
+{{/each}}
+
+{{!-- PAGES MENU --}}
+<div>
+{{#if prevLink}}
+<a href={{prevLink}}> &lt </a>
+{{/if}}
+
+{{#each pagesArray}}
+<a href="http://localhost:8080/products?page={{this}}{{queryString}}"> {{this}} </a>
+{{/each}}
+
+{{#if nextLink}}
+<a href={{nextLink}}> &gt </a>
+{{/if}}
+</div>
+
+
+{{else}}
+<p> No products </p>
+{{/if}}
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/products.js"></script>

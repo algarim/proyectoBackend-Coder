@@ -6,8 +6,36 @@ const router = Router();
 
 router.get('/', async (req, res) => {
     try {
-        const products = await productManager.getProducts();
+        const result = await productManager.getProducts(req.query);
+        const products = result.docs;
         res.render('home', { products });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+router.get('/products', async (req, res) => {
+    try {
+        const result = await productManager.getProducts(req.query);
+        const { page, ...query } = req.query;
+
+        const queryEntries = Object.entries(query);
+        const queryString = queryEntries.reduce((partialRes, entry) => partialRes + '&' + entry.join('='), '');
+
+        const products = result.docs;
+
+        const totalPages = result.totalPages;
+        const pagesArray = [...Array(totalPages).keys()].map(n => n + 1);
+
+        const prevLink = products.hasPrevPage
+            ? `http://localhost:8080/products?page=${products.prevPage}${queryString}`
+            : null;
+
+        const nextLink = products.hasNextPage
+            ? `http://localhost:8080/products?page=${products.nextPage}${queryString}`
+            : null;
+
+            res.render('products', { products, pagesArray, prevLink, nextLink, queryString });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -15,7 +43,8 @@ router.get('/', async (req, res) => {
 
 router.get('/realtimeproducts', async (req, res) => {
     try {
-        const products = await productManager.getProducts();
+        const result = await productManager.getProducts(req.query);
+        const products = result.docs;
         res.render('realtimeproducts', { products });
     } catch (error) {
         res.status(500).json({ message: error.message });

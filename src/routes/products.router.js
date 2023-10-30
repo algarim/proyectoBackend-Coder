@@ -11,7 +11,6 @@ router.get('/', async (req, res) => {
         const queryString = queryEntries.reduce ( (partialRes, entry) => partialRes + '&' + entry.join('='), '');
 
         const products = await productsManager.getProducts(req.query);
-        console.log(Object.entries(req.query));
         res.status(200).json({
             status: "Success",
             payload: products.docs,

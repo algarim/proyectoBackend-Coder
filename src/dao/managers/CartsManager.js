@@ -19,9 +19,9 @@ class CartsManager {
 
     async getCartById(id) {
         const result = await cartsModel
-        .findById(id)
-        .populate("products.product")
-        .lean();
+            .findById(id)
+            .populate("products.product")
+            .lean();
         return result;
     };
 
@@ -50,6 +50,38 @@ class CartsManager {
             }
 
             return { cartProducts, newCartItem };
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    };
+
+    async updateCart(cartId, productsArray) {
+        try {
+            const cart = await cartsModel.findById(cartId);
+            const cartProducts = cart?.products;
+            let updatedCartProducts;
+
+            if (cartProducts) {
+                if (cartProducts.length === 0) {
+                    await cartsModel.updateOne({ _id: cartId }, { products: productsArray });
+                    updatedCartProducts = productsArray;
+                } else {
+                    const productsArrayIds = [];
+                    for (let i = 0; i < productsArray.length; i++) {
+                        productsArrayIds.push(productsArray[i].product.toString());
+                    };
+
+                    const filteredProducts = cartProducts.filter((p) => !productsArrayIds.includes(p.product.toString()));
+
+                    console.log(filteredProducts);
+
+                    updatedCartProducts = [...filteredProducts, ...productsArray];
+                    await cartsModel.updateOne({ _id: cartId }, { products: updatedCartProducts });
+                };
+            }
+
+            return updatedCartProducts;
 
         } catch (error) {
             throw new Error(error.message);
@@ -96,7 +128,7 @@ class CartsManager {
 
             const result = await cartsModel.updateOne({ _id: cartId }, cart);
 
-            return {product: existingProduct, result};
+            return { product: existingProduct, result };
 
         } catch (error) {
             throw new Error(error.message);

@@ -9,7 +9,7 @@ class ProductsManager {
         };
         const result = await productsModel.paginate(
             query,
-            { limit, page, sort: sortObj }
+            { limit, page, sort: sortObj, lean: true }
         );
         return result;
     };
