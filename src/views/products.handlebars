@@ -1,22 +1,27 @@
+<h3> Welcome, {{user.first_name}}!</h3>
+<p>Role: {{user.role}}</p>
+<button>
+    <a href="/api/sessions/signout">Sign out</a>
+</button>
+
 <h2> PRODUCTS </h2>
 
 {{#if products}}
 
-{{!-- PAGES MENU (a modo ilustrativo) --}}
+{{!-- PAGES MENU --}}
 <div>
-{{#if prevLink}}
-<a href={{prevLink}}> &lt </a>
-{{/if}}
+    {{#if prevLink}}
+    <a href={{prevLink}}> &lt; </a>
+    {{/if}}
 
-{{#each pagesArray}}
-<a href=""> {{this}} </a>
-{{/each}}
+    {{#each pagesArray}}
+    <a href="/products?page={{this}}{{queryString}}"> {{this}} </a>
+    {{/each}}
 
-{{#if nextLink}}
-<a href={{nextLink}}> &gt </a>
-{{/if}}
+    {{#if nextLink}}
+    <a href={{nextLink}}> &gt; </a>
+    {{/if}}
 </div>
-
 
 {{!-- PRODUCTS LIST --}}
 {{#each products}}
@@ -32,19 +37,20 @@
 <br>
 {{/each}}
 
-{{!-- PAGES MENU (a modo ilustrativo) --}}
+{{!-- PAGES MENU --}}
+
 <div>
-{{#if prevLink}}
-<a href={{prevLink}}> &lt </a>
-{{/if}}
+    {{#if prevLink}}
+    <a href={{prevLink}}> &lt; </a>
+    {{/if}}
 
-{{#each pagesArray}}
-<a href="http://localhost:8080/products?page={{this}}{{queryString}}"> {{this}} </a>
-{{/each}}
+    {{#each pagesArray}}
+    <a href="/products?page={{this}}{{queryString}}"> {{this}} </a>
+    {{/each}}
 
-{{#if nextLink}}
-<a href={{nextLink}}> &gt </a>
-{{/if}}
+    {{#if nextLink}}
+    <a href={{nextLink}}> &gt; </a>
+    {{/if}}
 </div>
 
 

@@ -119,7 +119,7 @@ class CartsManager {
         try {
             const cart = await this.getCartById(cartId);
             const cartProducts = cart.products;
-            const existingProduct = cartProducts.find(item => item.product === productId);
+            const existingProduct = cartProducts.find(item => item.product.equals(productId));
 
             if (existingProduct) {
                 let index = cartProducts.indexOf(existingProduct);
