@@ -4,6 +4,7 @@ import { __dirname } from './utils.js';
 import { Server } from "socket.io";
 import MongoStore from "connect-mongo";
 import session from "express-session";
+import "./passport.js"
 
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
@@ -16,6 +17,7 @@ import { messagesModel } from './dao/models/messages.model.js';
 
 // DB
 import "./dao/configDB.js"
+import passport from 'passport';
 
 const app = express();
 const port = 8080;
@@ -34,9 +36,13 @@ app.use(
       mongoUrl: URI,
     }),
     secret: "secretSession",
-    cookie: { maxAge: 600000 },
+    cookie: { maxAge: 60000 },
   })
 );
+
+// PASSPORT
+app.use(passport.initialize());
+app.use(passport.session());
 
 // HANDLEBARS
 app.engine("handlebars", handlebars.engine());

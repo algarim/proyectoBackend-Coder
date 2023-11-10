@@ -1,9 +1,24 @@
 <h2>Sign Up</h2>
 
-<form action="/api/sessions/signup" method="post">
+<form action="/api/sessions/signup" method="post" id="signup-form">
     First Name: <input type="text" name="first_name" id="first_name">
     Last Name: <input type="text" name="last_name" id="last_name">
     Email: <input type="email" name="email" id="email">
     Password: <input type="password" name="password" id="password">
     <button type="submit">Create account</button>
 </form>
+
+<button onclick="location.href='/api/sessions/auth/github'"> Sign up with GITHUB </button>
+
+{{#if errorMessage}}
+<h4 style="color:red"> {{errorMessage}} </h4>
+{{/if}}
+
+<hr>
+
+<div>
+    Already have an account?
+    <button>
+        <a href="/login">Sign in</a>
+    </button>
+</div>

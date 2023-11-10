@@ -6,19 +6,16 @@ const router = Router();
 
 router.get('/', async (req, res) => {
     res.redirect("/login");
-    // try {
-    //     const result = await productManager.getProducts(req.query);
-    //     const products = result.docs;
-    //     res.render('home', { products });
-    // } catch (error) {
-    //     res.status(500).json({ message: error.message });
-    // }
 });
 
 router.get('/products', async (req, res) => {
-    if (!req.session.user) {
+    if (!req.session.passport) {
         return res.redirect("/login");
     }
+
+    const { first_name } = req.user;
+    let role = req.session.role;
+
     try {
         const result = await productManager.getProducts(req.query);
         const { page, ...query } = req.query;
@@ -39,7 +36,7 @@ router.get('/products', async (req, res) => {
             ? `/products?page=${result.nextPage}${queryString}`
             : null;
 
-        res.render('products', { products, pagesArray, prevLink, nextLink, queryString, user: req.session.user });
+        res.render('products', { products, pagesArray, prevLink, nextLink, queryString, user: { first_name, role } });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -81,17 +78,41 @@ router.get('/chat', async (req, res) => {
 // SESSIONS
 
 router.get("/login", (req, res) => {
-    if (req.session?.user) {
+    if (req.session?.passport) {
         return res.redirect("/products");
     }
-    res.render("login");
+
+    const messages = req.session.messages;
+    let errorMessage = null;
+
+    if(messages){
+        let n = messages.length;
+        if(n > 0){
+            errorMessage = messages[n-1];
+        }
+    };
+
+    res.render("login", { errorMessage });
+    req.session.messages = [];
 });
 
 router.get("/signup", (req, res) => {
-    if (req.session.user) {
+    if (req.session.passport) {
         return res.redirect("/products");
     }
-    res.render("signup");
+
+    const messages = req.session.messages;
+    let errorMessage = null;
+
+    if(messages){
+        let n = messages.length;
+        if(n > 0){
+            errorMessage = messages[n-1];
+        }
+    };
+
+    res.render("signup", { errorMessage });
+    req.session.messages = [];
 });
 
 export default router;
