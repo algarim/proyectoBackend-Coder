@@ -9,6 +9,9 @@ const usersSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  age: {
+    type: Number,
+  },
   email: {
     type: String,
     required: true,
@@ -21,6 +24,11 @@ const usersSchema = new mongoose.Schema({
   isGithub: {
     type: Boolean,
     default: false,
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user'
   }
 });
 

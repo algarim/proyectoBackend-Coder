@@ -9,12 +9,13 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/products', async (req, res) => {
+    console.log(req.cookies);
+
     if (!req.session.passport) {
         return res.redirect("/login");
     }
 
-    const { first_name } = req.user;
-    let role = req.session.role;
+    const { first_name, role } = req.user;
 
     try {
         const result = await productManager.getProducts(req.query);
@@ -114,5 +115,9 @@ router.get("/signup", (req, res) => {
     res.render("signup", { errorMessage });
     req.session.messages = [];
 });
+
+router.get('/success', (req, res) => {
+    res.render('success');
+})
 
 export default router;

@@ -17,7 +17,10 @@ import { messagesModel } from './dao/models/messages.model.js';
 
 // DB
 import "./dao/configDB.js"
+
+// SESSION
 import passport from 'passport';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const port = 8080;
@@ -28,6 +31,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 
+// COOKIES
+app.use(cookieParser("SecretCookie"));
+
 // SESSION MONGO STORE
 const URI = "mongodb+srv://algarim:coderMongoPass@cluster0.b0xclvx.mongodb.net/ecommerce?retryWrites=true&w=majority"
 app.use(
@@ -36,7 +42,7 @@ app.use(
       mongoUrl: URI,
     }),
     secret: "secretSession",
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 600000 },
   })
 );
 
