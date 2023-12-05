@@ -1,10 +1,10 @@
 import jwt from "jsonwebtoken";
-const SECRET_KEY_JWT = "jwtSecret";
+import envKeys from "../configEnv.js";
 
 export const jwtValidation = (req, res, next) => {
   try {
     const token = req.cookies.token;
-    const userToken = jwt.verify(token, SECRET_KEY_JWT);
+    const userToken = jwt.verify(token, envKeys.jwt_secret);
     req.user = userToken;
     next();
   } catch (error) {
