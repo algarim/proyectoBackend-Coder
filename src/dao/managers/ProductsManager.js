@@ -1,7 +1,7 @@
 import { productsModel } from "../models/products.model.js"
 
 class ProductsManager {
-    async getProducts(obj) {
+    async findAll(obj) {
         const { limit = 10, page = 1, sort, ...query } = obj;
         let sortObj
         if (sort) {
@@ -14,22 +14,22 @@ class ProductsManager {
         return result;
     };
 
-    async getProductById(id) {
+    async findById(id) {
         const result = await productsModel.findById(id);
         return result;
     };
 
-    async addProduct(obj) {
+    async createOne(obj) {
         const result = await productsModel.create(obj);
         return result;
     };
 
-    async updateProduct(id, obj) {
+    async updateOne(id, obj) {
         const result = await productsModel.updateOne( {_id: id}, obj );
         return result;
     };
 
-    async deleteProduct(id) {
+    async deleteOne(id) {
         const result = await productsModel.deleteOne( {_id: id} );
         return result;
     };

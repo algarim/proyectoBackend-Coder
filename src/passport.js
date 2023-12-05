@@ -21,7 +21,7 @@ passport.use('signup', new LocalStrategy(
 
             const role = (email === "adminCoder@coder.com") ? 'admin' : 'user';
 
-            const createdUser = await usersManager.createUser({ ...req.body, password: hashedPassword, role});
+            const createdUser = await usersManager.createOne({ ...req.body, password: hashedPassword, role});
             done(null, createdUser);
         } catch (error) {
             done(error);
@@ -36,7 +36,7 @@ passport.use('login', new LocalStrategy(
                 done(null, false);
             }
 
-            const user = await usersManager.getUserByEmail(email);
+            const user = await usersManager.findByEmail(email);
             if (!user) {
                 return done(null, false);
             }
@@ -63,7 +63,7 @@ passport.use('github', new GithubStrategy(
     },
     async (accessToken, refreshToker, profile, done) => {
         try {
-            const userDB = await usersManager.getUserByEmail(profile._json.email);
+            const userDB = await usersManager.findByEmail(profile._json.email);
 
             // Login
             if (userDB) {
@@ -85,7 +85,7 @@ passport.use('github', new GithubStrategy(
             if(infoUser.email === "adminCoder@coder.com") {
                 infoUser.role = 'admin';
             }
-            const createdUser = await usersManager.createUser(infoUser);
+            const createdUser = await usersManager.createOne(infoUser);
             done(null, createdUser);
 
         } catch (error) {
@@ -99,7 +99,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await usersManager.getUserById(id);
+        const user = await usersManager.findById(id);
         done(null, user);
     } catch (error) {
         done(error);

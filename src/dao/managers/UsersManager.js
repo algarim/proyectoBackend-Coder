@@ -1,17 +1,17 @@
 import { usersModel } from "../models/users.model.js";
 
 class UsersManager {
-  async getUserById(id) {
+  async findById(id) {
     const response = await usersModel.findById(id);
     return response;
   }
 
-  async getUserByEmail(email) {
+  async findByEmail(email) {
     const response = await usersModel.findOne({ email });
     return response;
   }
 
-  async createUser(obj) {
+  async createOne(obj) {
     const response = await usersModel.create(obj);
     return response;
   }

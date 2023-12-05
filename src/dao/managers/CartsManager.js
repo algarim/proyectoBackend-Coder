@@ -2,12 +2,12 @@ import { cartsModel } from '../models/carts.model.js';
 import productsManager from './ProductsManager.js';
 
 class CartsManager {
-    async getCarts() {
+    async findAll() {
         const carts = await cartsModel.find().lean();
         return carts;
     };
 
-    async createNewCart() {
+    async createOne() {
         const result = await cartsModel.create({ products: [] });
         return result;
     };
@@ -17,7 +17,7 @@ class CartsManager {
         return result;
     };
 
-    async getCartById(id) {
+    async findById(id) {
         const result = await cartsModel
             .findById(id)
             .populate("products.product")
@@ -56,7 +56,7 @@ class CartsManager {
         }
     };
 
-    async updateCart(cartId, productsArray) {
+    async updateOne(cartId, productsArray) {
         try {
             const cart = await cartsModel.findById(cartId);
             const cartProducts = cart?.products;
