@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import envKeys from "../configEnv.js";
+import envKeys from "../config/configEnv.js";
 
 export const jwtValidation = (req, res, next) => {
   try {

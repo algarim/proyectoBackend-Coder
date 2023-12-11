@@ -1,4 +1,4 @@
-import cartsManager from "../dao/managers/CartsManager";
+import cartsManager from "../dao/managers/CartsManager.js";
 
 export const createNewCart = async (req, res) => {
     try {

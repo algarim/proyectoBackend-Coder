@@ -2,7 +2,7 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import envKeys from "./configEnv.js";
+import envKeys from "./config/configEnv.js";
 
 
 export const __dirname = dirname(fileURLToPath(import.meta.url));

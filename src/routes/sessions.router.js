@@ -48,7 +48,6 @@ router.get("/current", jwtValidation, passport.authenticate('jwt', { session: fa
   res.status(200).json({ first_name, last_name, email, role, isGithub });
 });
 
-
 export default router;
 
 

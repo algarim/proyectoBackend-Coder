@@ -4,7 +4,8 @@ import { __dirname } from './utils.js';
 import { Server } from "socket.io";
 import MongoStore from "connect-mongo";
 import session from "express-session";
-import "./passport.js"
+import "./config/passport.js"
+import envKeys from './config/configEnv.js';
 
 import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
@@ -35,11 +36,10 @@ app.use(express.static(__dirname + "/public"));
 app.use(cookieParser("SecretCookie"));
 
 // SESSION MONGO STORE
-const URI = "mongodb+srv://algarim:coderMongoPass@cluster0.b0xclvx.mongodb.net/ecommerce?retryWrites=true&w=majority"
 app.use(
   session({
     store: new MongoStore({
-      mongoUrl: URI,
+      mongoUrl: envKeys.mongo_uri,
     }),
     secret: "secretSession",
     cookie: { maxAge: 600000 },

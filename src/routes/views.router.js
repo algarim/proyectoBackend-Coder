@@ -18,7 +18,7 @@ router.get('/products', async (req, res) => {
     const { first_name, role } = req.user;
 
     try {
-        const result = await productManager.getProducts(req.query);
+        const result = await productManager.findAll(req.query);
         const { page, ...query } = req.query;
 
         const queryEntries = Object.entries(query);
@@ -45,7 +45,7 @@ router.get('/products', async (req, res) => {
 
 router.get('/realtimeproducts', async (req, res) => {
     try {
-        const result = await productManager.getProducts(req.query);
+        const result = await productManager.findAll(req.query);
         const products = result.docs;
         res.render('realtimeproducts', { products });
     } catch (error) {
@@ -56,7 +56,7 @@ router.get('/realtimeproducts', async (req, res) => {
 router.get('/carts/:cid', async (req, res) => {
     const { cid } = req.params;
     try {
-        const cart = await cartsManager.getCartById(cid);
+        const cart = await cartsManager.findById(cid);
         const cartProducts = cart.products;
         res.render('cart', { cartProducts });
     } catch (error) {
